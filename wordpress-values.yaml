@@ -1,0 +1,38 @@
+### TO BE USED AFTER STORAGE IS CONFIGURED
+commonLabels:
+  app: nn-common
+wordpressUsername: helm-user
+wordpressPassword: my-pass
+wordpressEmail: helm-user@example.com
+wordpressFirstName: Helm_is
+wordpressLastName: Fun
+wordpressBlogName: Learn Helm!
+podLabels:
+  component: wordpress
+resources:
+  limits:
+    cpu: 800m
+    memory: 800Mi
+  requests:
+    cpu: 500m
+    memory: 500Mi
+service:
+  type: NodePort
+persistence:
+  enabled: true
+  storageClass: "wordpress-data"
+  size: 5Gi
+
+mariadb:
+  primary:
+    persistence:
+      enabled: true
+      storageClass: "mariadb-data"
+      size: 5Gi
+    resources:
+      limits:
+        cpu: 1
+        memory: 1Gi
+      requests:
+        cpu: 1
+        memory: 1Gi
