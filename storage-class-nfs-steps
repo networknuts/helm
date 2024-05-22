@@ -1,0 +1,51 @@
+Storage Class with NFS
+
+1 - configure nfs server (10.0.0.200)
+
+apt install nfs-kernel-server
+
+#mkdir --mode=777 /wordpress
+#mkdir --mode=777 /mariadb
+
+echo "/wordpress *(rw,sync,no_subtree_check)" >> /etc/exports
+echo "/mariadb *(rw,sync,no_subtree_check)" >> /etc/exports
+exportfs -a
+exportfs -r
+
+systemctl restart nfs-kernel-server
+
+2 - check from manager / nodes
+apt update && apt install nfs-common -y
+showmount -e ip-address-nfs-server
+
+3. ADD nfs provisioner (on manager / workstation)
+
+# Install helm -
+curl https://baltocdn.com/helm/signing.asc | sudo apt-key add -
+sudo apt-get install apt-transport-https --yes
+echo "deb https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+sudo apt-get update
+sudo apt-get install helm
+
+# then
+# reference - https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner
+
+helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/
+helm repo list
+
+# create a ns - storagenfs
+kubectl create ns storagenfs
+
+helm install wordpress-storage nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
+--set nfs.server=10.0.0.200 --set nfs.path=/wordpress \
+--set storageClass.name=wordpress-data \
+--set storageClass.onDelete=true -n storagenfs
+
+
+helm install mariadb-storage nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
+--set nfs.server=10.0.0.200 --set nfs.path=/mariadb \
+--set storageClass.name=mariadb-data \
+--set storageClass.onDelete=true -n storagenfs
+
+kubectl get storageclass
+helm list -n storagenfs
