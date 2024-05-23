@@ -12,5 +12,5 @@ configmap:
     CUSTOM_HEADER: 'This app was deployed with helm!'
 
 image:
-  name: devopsjourney1/mywebapp
-  tag: latest
+  name: lovelearnlinux/travel
+  tag: v1
