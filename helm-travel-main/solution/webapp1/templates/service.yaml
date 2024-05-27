@@ -13,4 +13,4 @@ spec:
   selector:
     app: {{ .Values.appName }}
     tier: frontend
-  type: LoadBalancer
+  type: NodePort
