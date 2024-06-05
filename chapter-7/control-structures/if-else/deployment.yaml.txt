@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.appName }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.appName }}
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName }}
+        tier: frontend
+    spec: # Pod spec
+      containers:
+      - name: mycontainer
+        image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+        ports:
+        - containerPort: 80
+        env:
+          - name: "USERNAME"
+            valueFrom:
+              secretKeyRef:
+                key:  username
+                         #name: {{ .Release.Name }}-auth
+                name: my-app-secret
+          - name: "PASSWORD"
+            valueFrom:
+              secretKeyRef:
+                key:  password
+                  #name: {{ .Release.Name }}-auth
+                name: my-app-secret
+        resources:
+          requests:
+            cpu: {{ if eq .Values.environment "production" }} "200m" {{ else }} "100m" {{ end }}
+            memory: {{ if eq .Values.environment "production" }} "200Mi" {{ else }} "100Mi" {{ end }}
+              #            memory: "16Mi"
+              #            cpu: "50m"    # 50 milli cores (1/20 CPU)
+          limits:
+            cpu: {{ if eq .Values.environment "production" }} "300m" {{ else }} "150m" {{ end }}
+            memory: {{ if eq .Values.environment "production" }} "300Mi" {{ else }} "150Mi" {{ end }}
+              #            memory: "128Mi" # 128 mebibytes
+              #            cpu: "100m"
+        {{- if .Values.readinessProbe.enabled }}
+        readinessProbe:
+          exec:
+            command:
+            - cat
+            - /var/www/html/index.html
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 2
+          failureThreshold: 2
+          successThreshold: 1
+        {{- end }}

@@ -1,0 +1,12 @@
+{{- $existingSecret := lookup "v1" "Secret" .Release.Namespace "my-app-secret" }}
+{{- if not $existingSecret }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-app-secret
+  annotations:
+     "helm.sh/hook": "pre-install"
+data:
+  password: {{ .Values.password | b64enc | quote }}
+  username: {{ .Values.username | b64enc | quote }}
+{{- end }}

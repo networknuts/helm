@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-file
+  labels:
+    app: nginxfile
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginxfile
+  template:
+    metadata:
+      labels:
+        app: nginxfile
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+        volumeMounts:
+         - name: variables-configmap
+           mountPath: /mnt/var1
+         - name: variables-secrets
+           mountPath: /mnt/var2
+      volumes:
+      - name: variables-configmap
+        configMap:
+        # Provide the name of the ConfigMap containing the files you want
+        # to add to the container
+          name: pre-install-configmap
+      - name: variables-secrets
+        secret:
+        # Provide the name of the Secret containing the files you want
+        # to add to the container
+          secretName: pre-install-secret

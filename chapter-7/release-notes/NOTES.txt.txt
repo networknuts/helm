@@ -1,0 +1,29 @@
+NETWORK NUTS Helm Chart Training
+
+1. Deployment Information:
+   - Release Name: {{ .Release.Name }}
+   - Namespace: {{ .Release.Namespace }}
+   - Chart Name: {{ .Chart.Name }}
+   - Chart Version: {{ .Chart.Version }}
+
+2. Service Information:
+   - Service Name: {{ .Release.Name }}-nginx-service
+   - Service Type: LoadBalancer
+   - Service Port: 80
+
+3. Accessing APPLICATION:
+   - Once the service is ready, you can access NGINX at the following endpoint:
+     http://<EXTERNAL-IP>
+
+   Note: It may take some time for the LoadBalancer to get an external IP.
+
+4. Useful Commands:
+   - Check the Deployment Status:
+     helm status {{ .Release.Name }}
+
+   - Get Detailed Information about the Deployment:
+     helm get all {{ .Release.Name }}
+
+5. Clean Up:
+   - To uninstall/delete the deployment, run:
+     helm uninstall {{ .Release.Name }}

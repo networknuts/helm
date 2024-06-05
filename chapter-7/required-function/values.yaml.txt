@@ -1,0 +1,28 @@
+appName: myhelmapp
+namespace: default
+configmap:
+  name: myhelmapp-configmap-v1
+  data:
+    CUSTOM_HEADER: 'This app was deployed with helm!'
+image:
+  name: lovelearnlinux/webserver
+  tag: v1
+environment: production
+service:
+  type:
+  port: 80
+#  type: ClusterIP
+#  type: LoadBalancer
+readinessProbe:
+  enabled: true  #change it to false also to see the change
+#values for configmaps
+configmaps:
+  - configmap1:
+      key1: value1
+      key2: value2
+  - configmap2:
+      key1: value1
+      key2: value2
+#values for secrets
+username: alok
+password: testinghelm
