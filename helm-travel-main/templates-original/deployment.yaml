@@ -19,7 +19,7 @@ spec:
     spec: # Pod spec
       containers:
       - name: mycontainer
-        image: devopsjourney1/mywebapp:latest
+        image: lovelearnlinux/travel:v1
         ports:
         - containerPort: 80
         envFrom:
