@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pre-install-configmap
+  annotations:
+   annotations:
+        "helm.sh/hook": pre-install,pre-delete
+        "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation,hook-failed
+data:
+   user: tarzan
+   location: jungle
